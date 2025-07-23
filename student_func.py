@@ -24,7 +24,8 @@ except mysql.connector.Error as e:
 
 def send_app():
     util.clear_terminal()
-    print('"Education is the most powerful weapon which you can use to change the world." -Nelson Mandela')
+    print('''"Education 🏫 is the most powerful weapon which you can use to change the world."
+           -Nelson Mandela''')
     print(" Send in your univesity application, and get ready to change the world!")
     print("=" * 50)
 
