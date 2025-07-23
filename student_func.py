@@ -1,16 +1,10 @@
-<<<<<<< HEAD
-def send_application(name): print(f"Sending application for {name}..."); input("Press Enter to continue.")
 
-def withdraw_application(name): print(f"Withdrawing application for {name}..."); input("Press Enter to continue.")
 
 def edit_general_info(name): print(f"Editing info for {name}..."); input("Press Enter to continue.")
 
-def search_universities(): print("Searching universities..."); input("Press Enter to continue.")
-
-def check_application_status(name): print(f"Checking application status for {name}..."); input("Press Enter to continue.")
+def check_application_statuses(name): print(f"Checking application status for {name}..."); input("Press Enter to continue.")
 
 def home_bar(name): print(f"This is {name}'s home bar..."); input("Press Enter to continue.")
-=======
 #!/usr/bin/env python3
 import utilities as util
 import mysql.connector
@@ -32,7 +26,7 @@ def send_app():
     util.clear_terminal()
     print('"Education is the most powerful weapon which you can use to change the world." -Nelson Mandela')
     print(" Send in your univesity application, and get ready to change the world!")
-    print("----------------------------------------------------------------------------------------------")
+    print("=" * 50)
 
     while True:
         university = input("Enter the name of the University: ")
@@ -56,20 +50,21 @@ def send_or_withdraw():
     print("-------------------------------------------------")
     print("Do you want to send or withdraw an application(S or W)")
     while True:
-        ans = input("Choose S or W").strip().lower()
+        ans = input("Choose S or W: ").strip().lower()
         if not ans: #if the user does not enter a value
-            print("Please enter an option")
+            print("Please enter an option!")
             continue
         elif ans != "s" or ans != "w":
-            print("")
+            print("Invalid Choice. Try agiain!")
+            continue
         elif ans == "s":
             util.clear_terminal()
             send_app()
+            break
         else:
             util.clear_terminal()
             withdraw_app()
 
-send_app()
 
 
 import os
@@ -130,4 +125,6 @@ def search_bar():
     else:
         print("No schools found.")
     input("\nPress Enter to return to menu...")
->>>>>>> e82332fbcb7f4ea57a15b8d4a4477ec875a736dd
+
+if __name__ == "__main__":
+    send_app()

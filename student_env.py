@@ -1,11 +1,12 @@
+#!/usr/bin/bash
 import os
 import time
 from student_func import (
-    send_application,
-    withdraw_application,
+    send_or_withdraw,
     edit_general_info,
-    search_universities,
-    check_application_status,
+    search_bar,
+    check_application_statuses,
+    scholarship_list,
     home_bar
 )
 
@@ -17,8 +18,8 @@ def load_student_env(student_name):
         clear_terminal()
         print(f"\n🎓 Welcome {student_name}, to your dashboard!")
         print("=" * 50)
-        print("1. Send an Application")
-        print("2. Withdraw an Application")
+        print("1. Send or withdraw an Application")
+        print("2. See Scholarships")
         print("3. Edit General Information")
         print("4. Search for Universities")
         print("5. Check Application Status")
@@ -29,15 +30,15 @@ def load_student_env(student_name):
         choice = input("Enter your choice (1-7): ").strip()
 
         if choice == '1':
-            send_application(student_name)
+            send_or_withdraw()
         elif choice == '2':
-            withdraw_application(student_name)
+            scholarship_list()
         elif choice == '3':
             edit_general_info(student_name)
         elif choice == '4':
-            search_universities()
+            search_bar()
         elif choice == '5':
-            check_application_status(student_name)
+            check_application_statuses(student_name)
         elif choice == '6':
             home_bar(student_name)
         elif choice == '7':
@@ -47,3 +48,6 @@ def load_student_env(student_name):
         else:
             print("⚠️ Invalid input. Please enter a number from 1 to 7.")
             time.sleep(2)
+
+if __name__ == "__main__":
+    load_student_env("Hoby")
