@@ -2,7 +2,7 @@
 
 import os
 import time
-from admin_func import review_app, edit_profile
+from admin import review_app, edit_profile
 
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
