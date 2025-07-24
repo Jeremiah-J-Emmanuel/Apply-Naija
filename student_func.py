@@ -1,13 +1,7 @@
-
-
-def edit_general_info(name): print(f"Editing info for {name}..."); input("Press Enter to continue.")
-
-def check_application_statuses(name): print(f"Checking application status for {name}..."); input("Press Enter to continue.")
-
-def home_bar(name): print(f"This is {name}'s home bar..."); input("Press Enter to continue.")
 #!/usr/bin/env python3
 import utilities as util
 import mysql.connector
+import time
 
 try: 
     connection = mysql.connector.connect(
@@ -20,28 +14,66 @@ try:
     cursor = connection.cursor()
 
 except mysql.connector.Error as e:
-    print(f"Error: {e}")
+    print(f"Error: {e}", "Connect to the internet and Run the app  Again")
 
-def send_app():
+
+
+def send_app(): #The fucntion for sending applications
     util.clear_terminal()
-    print('''"Education 🏫 is the most powerful weapon which you can use to change the world."
-           -Nelson Mandela''')
-    print(" Send in your univesity application, and get ready to change the world!")
+    print("'Education 🏫 is the most powerful weapon which you can use to change the world.'")
+    print("-Nelson Mandela-")
+    print("=" * 50)
+    print(" Send in your univesity application and get ready to change the world!")
     print("=" * 50)
 
     while True:
-        university = input("Enter the name of the University: ")
+        university = input("Enter the exact name of the institution: ")
         query = "SELECT * FROM universities WHERE name = %s"
         cursor.execute(query, (university,))
 
         # Fetch one matching record (if any)
         result = cursor.fetchone()
         if result:
+            print(f"Submitting application to {result}")
             break
         else:
             print("University not found. Try Again.")
             continue
+
+    while True:
+        course = input("What is the course you want to study: ")
+        if not course:
+            print("Please enter a value")
+            continue
+        else:
+            print("course successfully entered.")
+            break
         
+    print("Are You ready to submit you appliation")
+    print("By clicking yes, you are consenting to your personal details being shared with the university")
+    print("=" * 50)
+    print("1. YES")
+    print("2. NO")
+    while True:
+        ans = input("Submit your application [Y/N]: ").lower().strip()
+        if not ans:
+            print("Enter a value:")
+            continue
+        elif ans != "y" or ans != "n":
+            print("choose Y or N")
+            continue
+        elif ans == "y":
+            query = """
+            
+
+
+                     
+            """
+        else: #if ans == n
+            print("Cancelling submission")
+            time.sleep(1.5)
+            break
+
     cursor.close()
     connection.close()
 
@@ -126,6 +158,13 @@ def search_bar():
     else:
         print("No schools found.")
     input("\nPress Enter to return to menu...")
+
+
+def edit_general_info(name): print(f"Editing info for {name}..."); input("Press Enter to continue.")
+
+def check_application_statuses(name): print(f"Checking application status for {name}..."); input("Press Enter to continue.")
+
+def home_bar(name): print(f"This is {name}'s home bar..."); input("Press Enter to continue.")
 
 if __name__ == "__main__":
     send_app()
