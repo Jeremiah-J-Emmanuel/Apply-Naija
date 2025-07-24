@@ -11,10 +11,9 @@ try:
     password = 'AVNS_1DzsuhCNrX8Dsvjg2wA',
     database = 'APPLY_NAIJA',
     ssl_disabled = False)
-    cursor = connection.cursor()
 
 except mysql.connector.Error as e:
-    print(f"Error: {e}", "Connect to the internet and Run the app  Again")
+    print(f"Error: {e}", "Connect to the internet and Run the app again")
 
 
 
@@ -23,8 +22,12 @@ def send_app(): #The fucntion for sending applications
     print('"Education 🏫 is the most powerful weapon which you can use to change the world."-Nelson Mandela')
     print(" Send in your univesity application, and get ready to change the world!")
     print("=" * 50)
+    cursor = connection.cursor()
 
     while True:
+        print("Enter the exact name of the institution you want to apply to.")
+        print("Example: University of Nigeria Nsukka")
+        print("=" * 50)
         university = input("Enter the exact name of the institution: ")
         query = "SELECT * FROM universities WHERE name = %s"
         cursor.execute(query, (university,))
@@ -61,21 +64,62 @@ def send_app(): #The fucntion for sending applications
             print("choose Y or N")
             continue
         elif ans == "y":
-            query = """
-            
-
-
-                     
-            """
+            query = " "
+            print("Application submitted successfully! 🎉")
         else: #if ans == n
             print("Cancelling submission")
             time.sleep(1.5)
             break
 
     cursor.close()
-    connection.close()
+    print("Application submitted successfully! 🎉")
 
-def send_or_withdraw():
+
+def withdraw_app():
+    util.clear_terminal()
+    print("WITHDRAW AN APPLICATION FROM A UNIVERSITY")
+    print("-------------------------------------------------")
+    cursor = connection.cursor()
+
+    while True:
+        print("Enter the exact name of the institution you want to withdraw from.")
+        print("Example: University of Ibadan")
+        print("=" * 50)
+        university = input("Enter the exact name of the institution: ")
+        query = "SELECT * FROM universities WHERE name = %s"
+        cursor.execute(query, (university,))
+
+        # Fetch one matching record (if any)
+        result = cursor.fetchone()
+        if result:
+            print(f"Withdrawing application from {result}")
+            break
+        else:
+            print("University not found. Try Again.")
+            continue
+
+    while True:
+        ans = input("Are you sure you want to withdraw your application? [Y/N]: ").lower().strip()
+        if not ans:
+            print("Please enter a value:")
+            continue
+        elif ans != "y" and ans != "n":
+            print("Choose Y or N")
+            continue
+        elif ans == "y":
+            query = " "
+            print("Application withdrawn successfully! 🎉")
+            break
+        else: #if ans == n
+            print("Cancelling withdrawal")
+            time.sleep(1.5)
+            break
+
+    cursor.close()
+
+
+
+def send_or_withdraw(): #You need to put a check incase the timeline has passed for sending applications
     util.clear_terminal()
     print("SEND OR WITHDRAW AN APPLICATION FROM A UNIVERSITY")
     print("-------------------------------------------------")
@@ -131,9 +175,6 @@ def search_bar():
         print("No schools found.")
 
     input("\nPress Enter to return to menu...")
-
-
-
 
 
 if __name__ == "__main__":
