@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+from ast import While
 import utilities as util
 import mysql.connector
 import time
+from welcome import Student, Officer
 
 try: 
     connection = mysql.connector.connect(
@@ -175,6 +177,77 @@ def search_bar():
         print("No schools found.")
 
     input("\nPress Enter to return to menu...")
+
+
+if __name__ == "__main__":
+    search_bar()
+
+
+
+    def edit_general_info(student: Student): #This parameter is the student object
+        util.clear_terminal
+        print("What would you like to update?")
+        print("1.Name")
+        print("2.Email")
+        print("3. Password")
+        print("4. SSCE_score")
+
+        choice =input("Enter your choice :")
+        if choice == "1":
+            cursor = connection.cursor()
+            while True:
+                new_name = input("Enter your new name: ")
+                if new_name and new_name.isalpha():
+                    student.name =new_name
+                    update_query="UPDATE students SET name = %s  WHERE id = %s"
+                    cursor.execute(update_query, (student.name, student.id))
+                    cursor.close()
+                    connection.commit()
+                    print("Name updated successfully!")
+                    break
+                else:
+                    print("Enter a valid name!")
+                    continue
+
+        elif choice == "2":
+            cursor = connection.cursor()
+            new_email= input ("Enter your new email:")
+            print("The next time you log in, use this email")
+            student.email = new_email
+            update_query="UPDATE students SET email = %s WHERE id = %s"
+            cursor.execute(update_query, (student.email, student.id))
+            cursor.close()
+            connection.commit()
+            print("Email updated successfully!")
+
+        elif choice =="3":
+            new_phone =input("Enter your new phone number:")
+            util.phone= new_phone
+            update_query="UPDATE users SET phone=? WHERE id=?"
+            data =(new_phone,util.id)
+        else:
+            print("Invalid choice.")
+            return
+        cursor =conn.cursor()
+        cursor.execute(update_query,data)
+        conn.commit()
+        print ("Information updated successfully!")
+
+def check_application_statuses(user_id, conn):
+    cursor = conn.cursor()
+    query = "SELECT university_name, application_status FROM applications WHERE user_id=%s"
+    try:
+        cursor.execute(query, (user_id,))
+        results = cursor.fetchall()
+        if results:
+            print(f"\nApplication statuses for user ID {user_id}:")
+            for university, status in results:
+                print(f"- {university}: {status}")
+        else:
+            print("No applications found for this user.")
+    except mysql.connector.Error as err:
+        print("Database error:", err)
+
 
 
 if __name__ == "__main__":
