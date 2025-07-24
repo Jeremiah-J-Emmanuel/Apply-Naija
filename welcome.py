@@ -2,7 +2,10 @@
 import utilities as util
 import mysql.connector
 from mysql.connector import Error
+from student_env import load_student_env
+import time
 
+# Defining the Student and Officer classes
 class Student:
     def __init__(self, Reg_No, name, email, password, utme_score, state_of_origin, ssce_score, grades):
         self.Reg_No = Reg_No
@@ -38,6 +41,7 @@ except mysql.connector.Error as e:
     print(f"Error: {e} ⚠ Connection Error!")
     connection = None
 
+
 def email_exists(email, user_type):
     cursor = connection.cursor()
     if user_type == "student":
@@ -66,7 +70,6 @@ def unikey_match(key, university):
     cursor.execute(query, (university, university))
     code = cursor.fetchone()
     cursor.close()
-
     try:
         if code[0] == int(key):
             return True
@@ -78,6 +81,23 @@ def unikey_match(key, university):
         print("Provide a code of numbers")
         return False
     
+def password_match(email, password, user_type):
+    cursor = connection.cursor()
+    if user_type == "student":
+        query = "SELECT password FROM students WHERE email = %s"
+    else:
+        query = "SELECT password FROM officers WHERE email = %s"    
+    cursor.execute(query, (email,))
+    result = cursor.fetchone()
+    cursor.close()
+    if result[0] == password:
+        return True
+    else:
+        return False
+
+
+
+
 
 def signup_student():
     if not connection or not connection.is_connected():
@@ -172,6 +192,14 @@ def signup_student():
     finally:
         cursor.close()
 
+    util.clear_terminal()
+    print("Redirecting to yor dashboard...")
+    time.sleep(1.5)
+    load_student_env(student)
+
+
+
+
 
 def signup_officer():
     util.clear_terminal()
@@ -225,75 +253,100 @@ def signup_officer():
     connection.commit()
     cursor.close()
 
+    util.clear_terminal()
+    print("Redirecting to yor dashboard...")
+    time.sleep(1.5)
+    #add load officer dashboard function here
+
+
 def login_student():
     util.clear_terminal()
-    print("Student Login")
-
-    for attempt in range(2, 0, -1):
+    print("Login to student portal")
+    while True:
         email = input("Email: ").strip()
-        password = input("Password: ").strip() 
-        conn = None
-        cursor = None
-        try:
-            conn = get_db_connection()
-            if conn is None:
-                print("⚠ Cannot connect to database to login.")
-                input("Press Enter to continue...")
-                return
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM students WHERE email = %s AND password = %s", (email, password))
-            student = cursor.fetchone()
-            if student:
-                print(f"\n✅ Login successful! Welcome {student['name']}!")
-                input("Press Enter to continue...")
-                return
-            else:
-                print(f"\n❌ Invalid credentials ({attempt-1} attempts left)")
-        except Error as e:
-            print(f"⚠ Database Error: {e}")
+        if not email:
+            print("Email cannot be empty!")
+            continue
+        elif not email_exists(email, "student"):
+            print("❌ Email not registered!")
+            print("Please signup first.")
+            input("Press Enter to continue...")
+            return
+        else:
             break
-        finally:
-            if cursor:
-                cursor.close()
-            if conn and conn.is_connected():
-                conn.close()
-    print("\n🚫 Login failed.")
-    input("Press Enter to continue...")
+    
+    count = 0
+    while True:
+        if count > 3:
+            print("You have three failed attemps. Two more failed attempts, you will be logged out!")
+        password = input("Password: ").strip()
+        if not password:
+            print("Password cannot be empty!")
+            count += count + 1
+            continue
+        elif not password_match(email, password, "student"):
+            print("❌ Incorrect password!")
+            print("Please try again.")
+            count += count + 1
+            continue
+        else:
+            break
+
+    cursor = connection.cursor()
+    query = ("SELECT * FROM students WHERE email = %s")
+    cursor.execute(query, (email,))
+    row = cursor.fetchone()
+    student = Student(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+    cursor.close()
+
+    print(f"\n✅ Login successful! Welcome {student.name}!")
+    print("Loading your dashboard...")
+    time.sleep(1.5)
+    load_student_env(student)
+
 
 def login_officer():
-    clear_terminal()
+    util.clear_terminal()
     print("Admissions Officer Login")
-
-    for attempt in range(2, 0, -1):
+    while True:
         email = input("Email: ").strip()
-        password = input("Password: ").strip()
-        conn = None
-        cursor = None
-        try:
-            conn = get_db_connection()
-            if conn is None:
-                print("⚠ Cannot connect to database to login.")
-                input("Press Enter to continue...")
-                return
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM officers WHERE email = %s AND password = %s", (email, password))
-            officer = cursor.fetchone()
-            if officer:
-                print(f"\n✅ Login successful! Welcome {officer['name']}!")
-                input("Press Enter to continue...")
-                return
-            else:
-                print(f"\n❌ Invalid credentials ({attempt-1} attempts left)")
-        except Error as e:
-            print(f"⚠ Database Error: {e}")
+        if not email:
+            print("Email cannot be empty!")
+            continue
+        elif not email_exists(email, "officer"):
+            print("❌ Email not registered!")
+            print("Please signup first.")
+            input("Press Enter to continue...")
+            return
+        else:
             break
-        finally:
-            if cursor:
-                cursor.close()
-            if conn and conn.is_connected():
-                conn.close()
-    print("\n🚫 Login failed.")
-    input("Press Enter to continue...")
+        
+    while True:
+        password = input("Password: ").strip()
+        if not password:
+            print("Password cannot be empty!")
+            continue
+        elif not password_match(email, password, "officer"):
+            print("❌ Incorrect password!")
+            print("Please try again.")
+            continue
+        else:
+            break
+
+
+    cursor = connection.cursor()
+    query = "SELECT * FROM officers WHERE email = %s"
+    cursor.execute(query, (email,))
+    row = cursor.fetchone()
+    officer = Officer(row[1], row[2], row[3], row[4], row[5])
+    cursor.close()
+
+    print(f"\n✅ Login successful! Welcome {officer.name}!")
+    print("Loading your dashboard...")
+    time.sleep(1.5)
+    # Add load officer dashboard function here
+    # load_officer_env(officer)
+
 
 def welcome():
     while True:

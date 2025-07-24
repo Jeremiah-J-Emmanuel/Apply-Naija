@@ -13,10 +13,10 @@ from student_func import (
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def load_student_env(student_name):
+def load_student_env(student): #This function takes the student object as an argument
     while True:
         clear_terminal()
-        print(f"\n🎓 Welcome {student_name}, to your dashboard!")
+        print(f"\n🎓 Welcome {student.name}, to your dashboard!")
         print("=" * 50)
         print("1. Send or withdraw an Application")
         print("2. See Scholarships")
@@ -34,13 +34,13 @@ def load_student_env(student_name):
         elif choice == '2':
             scholarship_list()
         elif choice == '3':
-            edit_general_info(student_name)
+            edit_general_info(student.reg_no)
         elif choice == '4':
             search_bar()
         elif choice == '5':
-            check_application_statuses(student_name)
+            check_application_statuses(student.reg_no)
         elif choice == '6':
-            home_bar(student_name)
+            home_bar(student.reg_no)
         elif choice == '7':
             print("\nLogging out...")
             time.sleep(1.5)
