@@ -119,21 +119,6 @@ def withdraw_app():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def send_or_withdraw(): #You need to put a check incase the timeline has passed for sending applications
     util.clear_terminal()
     print("SEND OR WITHDRAW AN APPLICATION FROM A UNIVERSITY")
