@@ -1,0 +1,1 @@
+{"students": [{"email": "test@student.com", "password": "password123", "name": "John Doe"}], "universities": [{"email": "admin@uni.edu", "password": "adminpass", "name": "Great University", "code": "UNI123"}]}
