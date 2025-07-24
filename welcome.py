@@ -14,6 +14,16 @@ class Student:
         self.ssce_score = ssce_score
         self.grades = grades
 
+
+class Officer:
+    def __init__(self, name, email, password, university, code):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.university = university
+        self.code = code
+
+
 # Database config
 try: 
     connection = mysql.connector.connect(
@@ -40,6 +50,7 @@ def email_exists(email, user_type):
     cursor.close()
     return bool(result)
 
+
 def reg_no_exists(reg_no):
     cursor = connection.cursor()
     query = "SELECT 1 FROM students WHERE Reg_No = %s"
@@ -47,6 +58,26 @@ def reg_no_exists(reg_no):
     result = cursor.fetchone()
     cursor.close()
     return bool(result)
+
+
+def unikey_match(key, university):
+    cursor = connection.cursor()
+    query = "SELECT id FROM universities WHERE name = %s or acronym = %s"
+    cursor.execute(query, (university, university))
+    code = cursor.fetchone()
+    cursor.close()
+
+    try:
+        if code[0] == int(key):
+            return True
+        else:
+            print("The code you have provided is not the code for the university that you have entered!")
+            print("Try Again!")
+            return False
+    except ValueError:
+        print("Provide a code of numbers")
+        return False
+    
 
 def signup_student():
     if not connection or not connection.is_connected():
@@ -141,59 +172,61 @@ def signup_student():
     finally:
         cursor.close()
 
-if __name__ == "__main__":
-    signup_student()
-    if connection and connection.is_connected():
-        connection.close()
 
-
-
-
-
-    input("Press Enter to continue...")
-    def signup_officer():
-     clear_terminal()
+def signup_officer():
+    util.clear_terminal()
     print("Create Admissions Officer Account")
-    name = input("Full name: ").strip()
-    email = input("Official email: ").strip()
+    while True:
+        name = input("Full name: ").strip()
+        if not name: #if user does not input name
+            print("Enter your name!")
+            continue
+        else:
+            break
 
-    if email_exists(email, "officer"):
-        print("❌ Email already registered!")
-        input("Press Enter to continue...")
-        #return
+    while True:
+        email = input("Official email: ").strip()
+        if not email:
+            print("Enter an email")
+            continue
+        elif "@" not in email or ".com" not in email:
+            print("Enter a valid Email")
+            continue
+        elif email_exists(email, "officer"):
+            print("❌ Email already registered!")
+            print("Enter an email that is not registered")
+            continue
+        else:
+            break
+    while True:
+        password = input("Create password: ").strip()
+        if not password:
+            print("Enter a password!")
+            continue
+        else:
+            break
+    print("Enter the University ID given to your university by JAMB")
+    while True:
+        university_ID = input("university _code: ").strip()
+        print("Enter the exact University name or acronym")
+        print("Example: Pan-Atlantic University name or PAU")
+        university_name = input("University or acronymn name: ").strip()
+        if unikey_match(university_ID, university_name):
+            break
+        else:
+            continue
 
-    password = input("Create password: ").strip()
-    university_name = input("University name: ").strip()
-    university_ID = input("university _code: ").strip()
 
-    conn = None
-    cursor = None
-    try:
-        conn = get_db_connection()
-        if conn is None:
-            print("⚠ Cannot connect to database to register officer.")
-            input("Press Enter to continue...")
-            #return
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO officers (name, email, password, university_name,university_code)
-            VALUES (%s, %s, %s, %s,%s)
-        """, (name, email, password, university_name, university_ID))
-        conn.commit()
-        print("✅ Admissions officer account created successfully!")
-    except Error as e:
-        print(f"⚠ Database Error: {e}")
-    finally:
-        if cursor:
-            cursor.close()
-        if conn and conn.is_connected():
-            conn.close()
-
-    input("Press Enter to continue...")
-
+    officer = Officer(name, email, password, university_name, university_ID)
+    cursor = connection.cursor() 
+    query = ("INSERT INTO officers (name, email, password, university, University_ID) VALUES (%s, %s, %s, %s, %s)")
+    cursor.execute(query, (officer.name, officer.email, officer.password, officer.university, officer.code))
+    print(f"\n✅ Registration successful! Welcome {officer.name}!")
+    connection.commit()
+    cursor.close()
 
 def login_student():
-    clear_terminal()
+    util.clear_terminal()
     print("Student Login")
 
     for attempt in range(2, 0, -1):
@@ -269,7 +302,7 @@ def welcome():
         print("Do you want to:")
         print("1. Login")
         print("2. Signup")
-        choice = input("Select (1 or 2)").strip()
+        choice = input("Select (1 or 2) ").strip()
 
         if choice == "1":
             util.clear_terminal()
@@ -302,5 +335,5 @@ def welcome():
             print("❌ Invalid choice!")
             input("Press Enter to continue...")
 
-        if __name__ == "__main__":
-         welcome()
+if __name__ == "__main__":
+    welcome()
