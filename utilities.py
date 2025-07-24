@@ -4,3 +4,4 @@ def clear_terminal(): #To clear the terminal
         os.system('cls')
     else: #for Linux and macOS
         os.system('clear')
+
