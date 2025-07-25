@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import utilities as util
 import mysql.connector
-from mysql.connector import Error
 from student_env import load_student_env
 import time
 
@@ -174,12 +173,12 @@ def signup_student():
     # Insert into database
     cursor = connection.cursor()
     query = """
-        INSERT INTO students (Reg_No, name, email, password, utme_score, state_of_origin, ssce_score)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO students (Reg_No, name, email, password, utme_score, state_of_origin, ssce_score, grades)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """
     values = (
         student.Reg_No, student.name, student.email, student.password,
-        student.utme_score, student.state_of_origin, student.ssce_score
+        student.utme_score, student.state_of_origin, student.ssce_score, ' '.join(student.grades)
     )
     try:
         cursor.execute(query, values)
@@ -281,11 +280,11 @@ def login_student():
             print("You have three failed attemps. Two more failed attempts, you will be logged out!")
         password = input("Password: ").strip()
         if not password:
-            print("Password cannot be empty!")
+            print("\nPassword cannot be empty!")
             count += count + 1
             continue
         elif not password_match(email, password, "student"):
-            print("❌ Incorrect password!")
+            print("\n❌ Incorrect password!")
             print("Please try again.")
             count += count + 1
             continue
@@ -296,7 +295,7 @@ def login_student():
     query = ("SELECT * FROM students WHERE email = %s")
     cursor.execute(query, (email,))
     row = cursor.fetchone()
-    student = Student(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+    student = Student(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
     cursor.close()
 
     print(f"\n✅ Login successful! Welcome {student.name}!")
@@ -355,7 +354,7 @@ def welcome():
         print("Do you want to:")
         print("1. Login")
         print("2. Signup")
-        choice = input("Select (1 or 2) ").strip()
+        choice = input("Select [1 or 2] ").strip()
 
         if choice == "1":
             util.clear_terminal()
@@ -367,7 +366,7 @@ def welcome():
             elif sub == "2":
                 login_officer()
             else:
-                print("❌ Invalid choice!")
+                print("\n❌ Invalid choice!")
                 input("Press Enter to continue...")
 
         elif choice == "2":
