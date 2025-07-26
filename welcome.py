@@ -387,5 +387,5 @@ def welcome():
             print("❌ Invalid choice!")
             input("Press Enter to continue...")
 
-if __name__ == "__main__":
+if __name__== "__main__":
     welcome()
