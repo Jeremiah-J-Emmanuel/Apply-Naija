@@ -2,6 +2,7 @@
 import utilities as util
 import mysql.connector
 from student_env import load_student_env
+from officer_env import load_officer_env
 import time
 
 # Defining the Student and Officer classes
@@ -255,7 +256,7 @@ def signup_officer():
     util.clear_terminal()
     print("Redirecting to yor dashboard...")
     time.sleep(1.5)
-    #add load officer dashboard function here
+    load_officer_env(officer)
 
 
 def login_student():
@@ -343,14 +344,13 @@ def login_officer():
     print(f"\n✅ Login successful! Welcome {officer.name}!")
     print("Loading your dashboard...")
     time.sleep(1.5)
-    # Add load officer dashboard function here
-    # load_officer_env(officer)
+    load_officer_env(officer)
 
 
 def welcome():
     while True:
         util.clear_terminal()
-        print("Welcome to a Centralized Tertiary Education Application System for Nigerian Universities\n")
+        print("Welcome to a Apply Naija, The Centralized Tertiary Education Application System for Nigerian Universities\n")
         print("Do you want to:")
         print("1. Login")
         print("2. Signup")
