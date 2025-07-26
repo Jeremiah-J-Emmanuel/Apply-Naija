@@ -256,5 +256,5 @@ def login_university():   # Function to handle login for the admission officers
             return None
 
 
-if _name_ == "_main_":
-    welcome()
+if __name__ == "_main_":
+    welcome()
