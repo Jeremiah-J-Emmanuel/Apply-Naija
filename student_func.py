@@ -77,7 +77,7 @@ def send_app(student): #The fucntion for sending applications
                     SSCE_RESULT VARCHAR(20),
                     UTME_SCORE INT,
                     state_of_origin VARCHAR(30),
-                    grades VARCHAR (100),
+                    grades VARCHAR (500),
                     status VARCHAR(50)
                 )
                 """
@@ -85,7 +85,7 @@ def send_app(student): #The fucntion for sending applications
                 #Submission
                 query = f"INSERT INTO {app_table} VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 cursor.execute(query, (student.Reg_No, student.name, student.email, course,
-                                    student.ssce_score, student.utme_score, student.state_of_origin, ' '.join(student.grades), 'Pending'))
+                                    student.ssce_score, student.utme_score, student.state_of_origin, ','.join(student.grades), 'Pending'))
                 print("Application submitted successfully! 🎉")
                 connection.commit()
                 break                
@@ -158,7 +158,7 @@ def withdraw_app(student):
             if app_data:
                 print(f"Withdrawing application from {result[1]}...")
                 time.sleep(1.5)
-                query = f"DELETE FROM {app_table} WHERE student_id = %s"
+                query = f"DELETE FROM {app_table} WHERE Reg_No = %s"
                 cursor.execute(query, (student.Reg_No,))
                 connection.commit
                 print("Application withdrawn successfully! 🎉")

@@ -16,6 +16,7 @@ def get_connection():
 
 def review_app(officer):
     util.clear_terminal()
+    print("loading...")
     try:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -33,18 +34,19 @@ def review_app(officer):
         applicant_table = acronym + "_applicants"
 
         # Fetch only pending student applications
-        query = f"SELECT * FROM {applicant_table} WHERE status <> 'Admitted' AND status <> 'Rejected'" 
+        query = f"SELECT * FROM {applicant_table} WHERE status <> 'Admitted' AND status <> 'Denied'" 
         cursor.execute(query)
         applications = cursor.fetchall()
 
         if not applications:
-            print(f" No applications yet to {officer.university}")
+            print(f" No applications to review for {officer.university}")
             input("\nPress Enter to return to the dashboard.")
             return
         else:
             util.clear_terminal()
             print(f"\n Applications for {officer.university}")
             for app in applications:
+                util.clear_terminal()
                 print("=" * 75)
                 print(f"Name: {app['name']}")
                 print(f"Student Reg_No: {app['Reg_No']}")
@@ -92,7 +94,7 @@ def review_app(officer):
         print(f" Database error: {e}")
         cursor.close()
     except KeyboardInterrupt:
-        print("Exiting App reviews.....")
+        print("\nExiting App reviews.....")
         time.sleep(1.5)
         cursor.close()
         return
@@ -116,6 +118,7 @@ def edit_profile(officer):
         cursor = conn.cursor(dictionary=True)
 
         # Fetch existing data
+        print("loading...")
         cursor.execute("SELECT * FROM officers WHERE email = %s", (officer.email,))
         officer_result = cursor.fetchone() #This is a dictionary
         cursor.execute(f"SELECT * FROM universities WHERE id = {officer.code}")
@@ -152,7 +155,7 @@ def edit_profile(officer):
             cursor.execute("UPDATE officers SET email = %s WHERE email = %s", (new_email, officer.email))
             officer.email = new_email #updating the object's email property
             conn.commit()
-            print(f" Email updated successfully to {officer.email}.")
+            print(f"Email updated successfully to {officer.email}.")
             print(f"Remember this email when logging in next time")
         else:
             print(" No changes made.")
@@ -179,11 +182,11 @@ def edit_profile(officer):
         if new_status == "1":
             cursor.execute(f"UPDATE universities SET portal_status = 'Open' WHERE id = {officer.code}")
             conn.commit()
-            print(f" Portal status updated successfully to Open.")
+            print(f"Portal status updated successfully to Open.")
         elif new_status == "2":
             cursor.execute(f"UPDATE universities SET portal_status = 'Closed' WHERE id = {officer.code}")
             conn.commit()
-            print(f" Portal status updated successfully to Closed.")
+            print(f"Portal status updated successfully to Closed.")
         else:
             print(" No changes made.")
 
