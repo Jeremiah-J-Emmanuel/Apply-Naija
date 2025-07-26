@@ -30,17 +30,17 @@ def load_student_env(student): #This function takes the student object as an arg
         choice = input("Enter your choice (1-7): ").strip()
 
         if choice == '1':
-            send_or_withdraw()
+            send_or_withdraw(student)
         elif choice == '2':
             scholarship_list()
         elif choice == '3':
-            edit_general_info(student.reg_no)
+            edit_general_info(student)
         elif choice == '4':
             search_bar()
         elif choice == '5':
-            check_application_statuses(student.reg_no)
+            check_application_statuses(student)
         elif choice == '6':
-            home_bar(student.reg_no)
+            home_bar(student)
         elif choice == '7':
             print("\nLogging out...")
             time.sleep(1.5)
