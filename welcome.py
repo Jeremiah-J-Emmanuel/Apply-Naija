@@ -233,7 +233,7 @@ def signup_officer():
             continue
         else:
             break
-    print("Enter the University ID given to your university by JAMB")
+    print("\nEnter the University ID given to your university by JAMB")
     while True:
         university_ID = input("university _code: ").strip()
         print("Enter the exact University name or acronym")

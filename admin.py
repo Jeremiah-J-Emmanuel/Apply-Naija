@@ -21,7 +21,7 @@ def review_app(officer):
         cursor = conn.cursor(dictionary=True)
 
         # Get the university ID
-        cursor.execute("SELECT * FROM universities WHERE name = %s", (officer.university,))
+        cursor.execute("SELECT * FROM universities WHERE name = %s or acronym = %s", (officer.university, officer.university))
         result = cursor.fetchone()
 
         if not result:

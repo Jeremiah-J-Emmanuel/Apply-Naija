@@ -146,7 +146,7 @@ def withdraw_app(student):
                 SSCE_RESULT VARCHAR(20),
                 UTME_SCORE INT,
                 state_of_origin VARCHAR(30),
-                grades VARCHAR (100),
+                grades VARCHAR (500),
                 status VARCHAR(50)
             )
             """
