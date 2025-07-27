@@ -241,7 +241,7 @@ def scholarship_list():
     input("\nPress Enter to return to the menu...")
     cursor.close()
 
-
+# 
 def search_bar():
     util.clear_terminal()
     print("WELCOME TO THE SEARCH BAR!")
@@ -377,7 +377,7 @@ def edit_general_info(student): #This parameter is the student object
         time.sleep(1)
         return
 
-
+# Here the student will check the status of their application
 def check_application_statuses(student):
     util.clear_terminal()
     print("loading ......")
