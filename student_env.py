@@ -47,7 +47,7 @@ def load_student_env(student): #This function takes the student object as an arg
             break
         else:
             print("⚠️ Invalid input. Please enter a number from 1 to 7.")
-            time.sleep(2)
+            time.sleep(1)
 
 if __name__ == "__main__":
     load_student_env("Hoby")

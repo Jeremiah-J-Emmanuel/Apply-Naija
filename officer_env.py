@@ -7,10 +7,10 @@ from admin import review_app, edit_profile
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def load_officer_env(university_name):
+def load_officer_env(officer): #This function will take an object called officer
     while True:
         clear_terminal()
-        print(f"\n🏛️ Welcome, {university_name} Admissions Officer!")
+        print(f"\n🏛️ Welcome, {officer.name}, Admissions Officer for {officer.university}!")
         print("=" * 50)
         print("1. Review Applications")
         print("2. Edit University Profile Information")
@@ -20,14 +20,18 @@ def load_officer_env(university_name):
         choice = input("Enter your choice (1–3): ").strip()
 
         if choice == '1':
-            review_app(university_name)
+            review_app(officer)
         elif choice == '2':
-            edit_profile(university_name)
+            edit_profile(officer)
         elif choice == '3':
             print("\nLogging out...")
             time.sleep(1.5)
             break
         else:
             print("⚠️ Invalid input. Please enter a number from 1 to 3.")
-            time.sleep(2)
+            time.sleep(1)
+
+
+if __name__ == "__main__":
+    load_officer_env()
 
