@@ -7,7 +7,7 @@ import time
 
 # Defining the Student and Officer classes
 class Student:
-    def __init__(self, Reg_No, name, email, password, utme_score, state_of_origin, ssce_score, grades):
+    def __init__(self, Reg_No, name, email, password, utme_score, state_of_origin, ssce_score, grades, applications):
         self.Reg_No = Reg_No
         self.name = name
         self.email = email
@@ -16,6 +16,7 @@ class Student:
         self.state_of_origin = state_of_origin
         self.ssce_score = ssce_score
         self.grades = grades
+        self.applications = applications
 
 
 class Officer:
@@ -98,7 +99,6 @@ def password_match(email, password, user_type):
 
 
 
-
 def signup_student():
     if not connection or not connection.is_connected():
         print("❌ Cannot connect to the database.")
@@ -164,23 +164,17 @@ def signup_student():
         except ValueError:
             print("❌ Invalid input! Enter a number.")
             continue
-
     # Create student object
-    student = Student(
-        reg_no, name, email, password,
-        utme_score, state, ssce_score.strip(), grade_holder
-    )
-
+    student = Student(reg_no, name, email, password, utme_score, state, ssce_score.strip(), grade_holder, "")
     # Insert into database
     cursor = connection.cursor()
     query = """
-        INSERT INTO students (Reg_No, name, email, password, utme_score, state_of_origin, ssce_score, grades)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO students (Reg_No, name, email, password, utme_score, state_of_origin, ssce_score, grades, applications)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     values = (
         student.Reg_No, student.name, student.email, student.password,
-        student.utme_score, student.state_of_origin, student.ssce_score, ' '.join(student.grades)
-    )
+        student.utme_score, student.state_of_origin, student.ssce_score, " ".join(student.grades), student.applications)
     try:
         cursor.execute(query, values)
         connection.commit()
@@ -189,6 +183,9 @@ def signup_student():
         print("Your SSCE subject grades will be available in your dashboard.")
     except mysql.connector.Error as err:
         print(f"❌ Database error: {err}")
+        print("An error has occured")
+        time.sleep(6)
+        return
     finally:
         cursor.close()
 
@@ -236,7 +233,7 @@ def signup_officer():
     print("\nEnter the University ID given to your university by JAMB")
     while True:
         university_ID = input("university _code: ").strip()
-        print("Enter the exact University name or acronym")
+        print("\nEnter the exact University name or acronym")
         print("Example: Pan-Atlantic University name or PAU")
         university_name = input("University or acronymn name: ").strip()
         if unikey_match(university_ID, university_name):
@@ -296,7 +293,7 @@ def login_student():
     query = ("SELECT * FROM students WHERE email = %s")
     cursor.execute(query, (email,))
     row = cursor.fetchone()
-    student = Student(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+    student = Student(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8] )
     cursor.close()
 
     print(f"\n✅ Login successful! Welcome {student.name}!")
@@ -349,43 +346,51 @@ def login_officer():
 
 def welcome():
     while True:
-        util.clear_terminal()
-        print("Welcome to a Apply Naija, The Centralized Tertiary Education Application System for Nigerian Universities\n")
-        print("Do you want to:")
-        print("1. Login")
-        print("2. Signup")
-        choice = input("Select [1 or 2] ").strip()
-
-        if choice == "1":
+        try:
             util.clear_terminal()
-            print("1. Student Login")
-            print("2. Admissions Officer Login")
-            sub = input("Choose: ").strip()
-            if sub == "1":
-                login_student()
-            elif sub == "2":
-                login_officer()
-            else:
-                print("\n❌ Invalid choice!")
-                input("Press Enter to continue...")
+            print("Welcome to a Apply Naija, The Centralized Tertiary Education Application System for Nigerian Universities\n")
+            print("Do you want to:")
+            print("1. Login")
+            print("2. Signup")
+            choice = input("Select [1 or 2] ").strip()
 
-        elif choice == "2":
-            util.clear_terminal()
-            print("--- Account Type ---")
-            print("1. Create applicant account")
-            print("2. Create admissions officer account")
-            sub = input("Choose: ").strip()
-            if sub == "1":
-                signup_student()
-            elif sub == "2":
-                signup_officer()
+            if choice == "1":
+                util.clear_terminal()
+                print("1. Student Login")
+                print("2. Admissions Officer Login")
+                sub = input("Choose: ").strip()
+                if sub == "1":
+                    login_student()
+                elif sub == "2":
+                    login_officer()
+                else:
+                    print("\n❌ Invalid choice!")
+                    input("Press Enter to continue...")
+
+            elif choice == "2":
+                util.clear_terminal()
+                print("--- Account Type ---")
+                print("1. Create applicant account")
+                print("2. Create admissions officer account")
+                sub = input("Choose: ").strip()
+                if sub == "1":
+                    signup_student()
+                elif sub == "2":
+                    signup_officer()
+                else:
+                    print("❌ Invalid choice!")
+                    input("Press Enter to continue...")
+
             else:
                 print("❌ Invalid choice!")
                 input("Press Enter to continue...")
-
-        else:
-            print("❌ Invalid choice!")
+        except KeyboardInterrupt:
+            print("\nExiting the application. Goodbye!")
+            break
+        except mysql.connector.Error as err:
+            print(f"❌ Database error: {err}")
             input("Press Enter to continue...")
+            break
 
 if __name__== "__main__":
     welcome()
