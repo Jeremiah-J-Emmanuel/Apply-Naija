@@ -28,7 +28,7 @@ def send_app(student): #The fucntion for sending applications
     print("Example: University of Nigeria Nsukka")
     print("=" * 75)
     while True:
-        university = input("\nEnter the exact name of the institution: ")
+        university = input("\nEnter the exact name of the institution: ").strip()
         query = "SELECT * FROM universities WHERE name = %s"
         cursor.execute(query, (university,))
 
@@ -40,7 +40,7 @@ def send_app(student): #The fucntion for sending applications
         else:
             print("School not found. Try Again.")
             continue
-
+    util.clear_terminal()
     while True:
         course = input("\nWhat is the course you want to study: ")
         if not course:
@@ -86,8 +86,12 @@ def send_app(student): #The fucntion for sending applications
                 query = f"INSERT INTO {app_table} VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 cursor.execute(query, (student.Reg_No, student.name, student.email, course,
                                     student.ssce_score, student.utme_score, student.state_of_origin, ','.join(student.grades), 'Pending'))
-                print("Application submitted successfully! 🎉")
+                university = result[1] #This is the name of the university
+                student.applications = student.applications + university + "_"
+                query = "UPDATE students SET applications = %s WHERE Reg_No = %s"
+                cursor.execute(query, (student.applications, student.Reg_No))
                 connection.commit()
+                print("Application submitted successfully! 🎉")
                 break                
 
             except mysql.connector.IntegrityError: #If the user has already submitted
@@ -160,8 +164,14 @@ def withdraw_app(student):
                 time.sleep(1.5)
                 query = f"DELETE FROM {app_table} WHERE Reg_No = %s"
                 cursor.execute(query, (student.Reg_No,))
-                connection.commit
+                university = result[1] 
+                university = university + "_"
+                student.applications = student.applications.replace(university, "")
+                query = f"UPDATE students SET applications = %s WHERE Reg_No = %s"
+                cursor.execute(query, (student.applications, student.Reg_No))
+                #This is to delete the university from the list of the student's applications
                 print("Application withdrawn successfully! 🎉")
+                connection.commit()
                 break
             else:
                 print("You have not submitted any application to this institution")
@@ -231,7 +241,7 @@ def scholarship_list():
     input("\nPress Enter to return to the menu...")
     cursor.close()
 
-
+# 
 def search_bar():
     util.clear_terminal()
     print("WELCOME TO THE SEARCH BAR!")
@@ -345,7 +355,7 @@ def edit_general_info(student): #This parameter is the student object
                     print("❌ Format error, use 'Subject, Grade'")
                     continue
                 else:
-                    grade_holder.append[entry]
+                    grade_holder.append(entry)
                     break
 
         ssce_score = ""
@@ -357,8 +367,9 @@ def edit_general_info(student): #This parameter is the student object
         student.grades = grade_holder
 
         update_query = "UPDATE students SET ssce_score = %s, grades = %s WHERE Reg_No = %s"
-        cursor.execute(update_query, (student.ssce_score, ' '.join(student.grades), student.Reg))
+        cursor.execute(update_query, (student.ssce_score, ' '.join(student.grades), student.Reg_No))
         connection.commit()
+        print("Grades Updated successfully.")
         enter = input("Press Enter to Continue ")
 
     else:
@@ -366,23 +377,35 @@ def edit_general_info(student): #This parameter is the student object
         time.sleep(1)
         return
 
-
-def check_application_statuses(user_id, conn):
-    cursor = conn.cursor()
-    query = "SELECT university_name, application_status FROM applications WHERE user_id=%s"
-    try:
-        cursor.execute(query, (user_id,))
-        results = cursor.fetchall()
-        if results:
-            print(f"\nApplication statuses for user ID {user_id}:")
-            for university, status in results:
-                print(f"- {university}: {status}")
-        else:
-            print("No applications found for this user.")
-    except mysql.connector.Error as err:
-        print("Database error:", err)
-
-
+# Here the student will check the status of their application
+def check_application_statuses(student):
+    util.clear_terminal()
+    print("loading ......")
+    cursor = connection.cursor(dictionary=True)
+    applications = (student.applications).strip("_")
+    if not applications:
+        print("You have not submitted any applications.")
+        print("Submit an application to a school and check again..")
+        enter = input("Press Enter to go back")
+        return
+    else:
+        applications = applications.split("_")
+        for university in applications:
+            query = "SELECT * FROM universities WHERE name = %s"
+            cursor.execute(query, (university.strip(),))
+            university_data = cursor.fetchone()
+            if not university_data:
+                print(f"No university found with this name, {university}.")
+                time.sleep(2)
+                break
+            else:
+                acronym = university_data['acronym']
+                table_name = acronym + "_applicants"
+                query = f"SELECT * FROM {table_name} WHERE Reg_No = %s"
+                cursor.execute(query, (student.Reg_No,))
+                application_result = cursor.fetchone()
+                print(f"{university}: {application_result['name']} - {application_result['course']} - {application_result['status']}")
+        enter = input("Press Enter to go back.")
 
 if __name__ == "__main__":
     search_bar()
