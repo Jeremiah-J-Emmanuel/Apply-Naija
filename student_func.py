@@ -40,7 +40,7 @@ def send_app(student): #The fucntion for sending applications
         else:
             print("School not found. Try Again.")
             continue
-
+    util.clear_terminal()
     while True:
         course = input("\nWhat is the course you want to study: ")
         if not course:
