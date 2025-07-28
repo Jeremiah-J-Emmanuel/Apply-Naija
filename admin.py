@@ -58,6 +58,8 @@ def review_app(officer):
                 print(f"SSCE result Summary: {app['SSCE_RESULT']}")
                 print("=" * 75)
 
+                #Review Grade meets criteria for Admission
+                
                 print("Make a decision on this application")
                 while True:
                     decision = input("Admit or Deny or Waitlist [A/D/W]: ").lower().strip()
