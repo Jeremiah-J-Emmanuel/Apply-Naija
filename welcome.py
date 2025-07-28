@@ -7,7 +7,7 @@ import time
 import os
 import sys
 
-def show_splash_screen():
+def show_splash_screen(): #This function is for a better UI experience
     util.clear_terminal()  # Clear terminal
 
     splash = """
