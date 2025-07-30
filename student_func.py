@@ -241,7 +241,7 @@ def scholarship_list():
     input("\nPress Enter to return to the menu...")
     cursor.close()
 
-# 
+# Search for the desired university
 def search_bar():
     util.clear_terminal()
     print("WELCOME TO THE SEARCH BAR!")
