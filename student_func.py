@@ -16,6 +16,17 @@ try:
 except mysql.connector.Error as e:
     print(f"Error: {e}", "Connect to the internet and Run the app again")
 
+def school_is_closed(university):
+    cursor = connection.cursor()
+    query = "SELECT * FROM universities WHERE name = %s"
+    cursor.execute(query, (university,))
+    university_row = cursor.fetchone()
+    if university_row:
+        portal_status = university_row[4]
+        if portal_status == "Open":
+            return False
+        else:
+            return True
 
 
 def send_app(student): #The fucntion for sending applications
@@ -34,13 +45,17 @@ def send_app(student): #The fucntion for sending applications
 
         # Fetch one matching record (if any)
         result = cursor.fetchone()
-        if result:
+        if not result:
+            print("School not found. Try Again")
+            continue
+        elif school_is_closed(result[1]):
+            print("This school is no longer accepting applications for this admssions cycle.")
+            time.sleep(2)
+            return #This return is used to bypass all the other while loops
+        else:
             print(f"Submitting application to {result[1]}")
             break
-        else:
-            print("School not found. Try Again.")
-            continue
-
+    util.clear_terminal()
     while True:
         course = input("\nWhat is the course you want to study: ")
         if not course:

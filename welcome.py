@@ -4,6 +4,31 @@ import mysql.connector
 from student_env import load_student_env
 from officer_env import load_officer_env
 import time
+import os
+import sys
+
+def show_splash_screen(): #This function is for a better UI experience
+    util.clear_terminal()  # Clear terminal
+
+    splash = """
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║    🇳🇬📘             WELCOME TO APPLY NAIJA             📘🇳🇬     ║
+║                                                                  ║
+║  📚 Empowering Nigerian Students to Secure University Admission  ║
+║                                                                  ║
+║  🔐 Secure | 🎓 Trusted | 🌍 Nationwide                         ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+"""
+
+    print(splash)
+    print("Loading", end="", flush=True)
+    for _ in range(2):  # Simulate loading
+        print(".", end="", flush=True)
+        time.sleep(0.5)
+    print("\n")
+ 
 
 # Defining the Student and Officer classes
 class Student:
@@ -347,8 +372,8 @@ def login_officer():
 def welcome():
     while True:
         try:
-            util.clear_terminal()
-            print("Welcome to a Apply Naija, The Centralized Tertiary Education Application System for Nigerian Universities\n")
+            show_splash_screen()
+            print("Welcome to the Centralized Tertiary Education Application System for Nigerian Universities\n")
             print("Do you want to:")
             print("1. Login")
             print("2. Signup")

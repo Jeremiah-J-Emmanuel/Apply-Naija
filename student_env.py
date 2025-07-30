@@ -9,13 +9,14 @@ from student_func import (
     scholarship_list,
     home_bar
 )
-
+#function to clear the terminal screen for better readability.
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
-
+#Main Student dashboard that helps students interact with the system
 def load_student_env(student): #This function takes the student object as an argument
     while True:
         clear_terminal()
+    #Welcome message and menu options.
         print(f"\n🎓 Welcome {student.name}, to your dashboard!")
         print("=" * 50)
         print("1. Send or withdraw an Application")
