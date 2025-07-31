@@ -34,7 +34,11 @@ def review_app(officer):
         applicant_table = acronym + "_applicants"
 
         # Fetch only pending student applications
-        query = f"SELECT * FROM {applicant_table} WHERE status <> 'Admitted' AND status <> 'Denied'" 
+        query = f"""
+        SELECT * FROM {applicant_table}
+        WHERE status <> 'Admitted' AND status <> 'Denied'
+        ORDER BY UTME_SCORE DESC
+        """
         cursor.execute(query)
         applications = cursor.fetchall()
 
