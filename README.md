@@ -52,11 +52,11 @@ This prototype is a console based application, thus, it should be run on the com
 ### 1. Clone the Repository
 git clone https://github.com/Jeremiah-J-Emmanuel/Apply-Naija_GroupCodingLab17-Education-PLP2
 cd Apply-Naija_GroupCodingLab17-Education-PLP2
-
+To run the application, run the welcome.py file
 
 ### 2. Run the Application
 You should make use of the version of python that you have. The most common is python3, and that is what is used here.
-python3 Welcome.py
+python3.
 
 ### 3. User Flow
 
