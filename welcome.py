@@ -179,7 +179,7 @@ def signup_student():
             input("If you already have an account please sign in, else use your registration number")
             continue
         elif len(reg_no) != 10:
-            print("Registration number must be 10 characters")
+            print("Registration number must be 10 characters\n")
             continue
         else:
             break
