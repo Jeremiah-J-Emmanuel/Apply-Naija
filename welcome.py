@@ -133,22 +133,57 @@ def signup_student():
     util.clear_terminal()
     print("Create Applicant Account")
 
-    name = input("Full name: ").strip()
-    email = input("Email: ").strip()
+    while True:
+        name = input("Full name: ").strip()
+        if not name:
+            print("Enter a name")
+            continue
+        elif name.isdigit():
+            print("Invalid input")
+            continue
+        else:
+            break
+        
+    while True:
+        email = input("Email: ").strip()
+        if not email:
+            print("Enter an email")
+            continue
+        elif email_exists(email, "student"):
+            print("❌ Email already in use!")
+            input("Press Enter to return...")
+            continue
+        else:
+            break
+        
+    while True:
+        password = input("Password: ").strip()
+        if not password:
+            print("Enter a password")
+            continue
+        else:
+            break
 
-    if email_exists(email, "student"):
-        print("❌ Email already in use!")
-        input("Press Enter to return...")
-        return
+    while True:
+        state = input("State of origin: ").strip()
+        if not state:
+            print("Enter a state")
+            continue
+        else:
+            break
 
-    password = input("Password: ").strip()
-    state = input("State of origin: ").strip()
-
-    reg_no = input("Registration Number: ").strip() #Makes sure to add length checks.
-    if reg_no_exists(reg_no):
-        print("❌ Registration number already in use!")
-        input("Press Enter to return...")
-        return
+    while True:
+        reg_no = input("Registration Number: ").strip() #Makes sure to add length checks.
+        if reg_no_exists(reg_no):
+            print("❌ Registration number already in use!")
+            input("If you already have an account please sign in, else use your registration number")
+            continue
+        elif len(reg_no) != 10:
+            print("Registration number must be 10 characters")
+            continue
+        else:
+            break
+            
 
     # SSCE subject count input
     while True:
